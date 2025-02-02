@@ -26,26 +26,31 @@ GREEN = (0, 255, 0)
 DARKGREEN = (10, 50, 10)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+YELLOW = (246, 233, 94 )
+ORANGE = (255, 195, 0)
+PURPLE = (175, 119, 210)
+PURPLE2 = (210, 178, 238)
 
 #Set fonts
 font_loc = os.path.join('you_are_what_you_eat', 'fonts', 'SuperDessert-EaAyj.ttf')
-font = pygame.font.Font(font_loc, 32)
+font_medium = pygame.font.Font(font_loc, 40)
+font_large = pygame.font.Font(font_loc, 50)
 
 #Set Text
-score_text = font.render("Score: " + str(points), True, GREEN, DARKGREEN)
+score_text = font_medium.render("Score: " + str(points), True, ORANGE)
 score_rect = score_text.get_rect()
 score_rect.topleft = (10, 10)
 
-title_text = font.render("You Are What You Eat", True, GREEN, WHITE)
+title_text = font_large.render("You Are What You Eat", True, YELLOW)
 title_rect = title_text.get_rect()
 title_rect.centerx = WINDOW_WIDTH//2
 title_rect.y = 10
 
-timer_text = font.render("99", True, GREEN, DARKGREEN)
+timer_text = font_medium.render("time: 99", True, ORANGE)
 timer_rect = timer_text.get_rect()
 timer_rect.topright = (WINDOW_WIDTH - 10, 10)
 
-game_over_text = font.render("GAMEOVER", True, GREEN, DARKGREEN)
+game_over_text = font_medium.render("GAMEOVER", True, YELLOW)
 game_over_rect = game_over_text.get_rect()
 game_over_rect.center = (WINDOW_WIDTH//2, WINDOW_HEIGHT//2)
 
@@ -72,13 +77,33 @@ evilchar_right_loc = os.path.join('you_are_what_you_eat', 'images', 'characters'
 evilchar_right_image = pygame.image.load(evilchar_right_loc)
 
 #set food image
+food_image_list = []
+food_folder = os.path.join('you_are_what_you_eat', 'images', 'food')
+for f in os.listdir(food_folder):
+    f_loc = os.path.join(food_folder, f)
+    food_image_list.append(pygame.image.load(f_loc))
 
 #set poison image
-
+poison_image_list = []
+poison_folder = os.path.join('you_are_what_you_eat', 'images', 'poison')
+for p in os.listdir(poison_folder):
+    p_loc = os.path.join(poison_folder, p)
+    poison_image_list.append(pygame.image.load(p_loc))
 
 #initialize character rectangle 
 char_rect = goodchar_stand_image.get_rect()
 char_rect.center = (640, 620)
+
+#Food and poison rendering flags
+food_01_rendered = False
+food_02_rendered = False
+food_03_rendered = False
+food_04_rendered = False
+food_05_rendered = False
+poison_01_rendered = False
+poison_02_rendered = False
+poison_03_rendered = False
+poison_04_rendered = False
 
 #The main game loop
 running = True
@@ -94,10 +119,101 @@ while running:
     #Fill the display
     display_surface.fill(BLACK)
 
-    #Blit the HUD to screen
+    #Blit texts to screen
     display_surface.blit(score_text, score_rect)
     display_surface.blit(title_text, title_rect)
     display_surface.blit(timer_text, timer_rect)
+
+    #Draw food
+    if not food_01_rendered:
+        food_01_image = random.choice(food_image_list)
+        food_01_image = pygame.transform.scale(food_01_image, (80, 80))
+        food_01_rect = food_01_image.get_rect()
+        food_01_rect.center = (random.randint(100, WINDOW_WIDTH-100), 110)
+        food_01_speed = random.randint(2, 8)
+        food_01_rendered = True
+    food_01_rect.y += food_01_speed
+    display_surface.blit(food_01_image, food_01_rect)
+
+    if not food_02_rendered:
+        food_02_image = random.choice(food_image_list)
+        food_02_image = pygame.transform.scale(food_02_image, (80, 80))
+        food_02_rect = food_02_image.get_rect()
+        food_02_rect.center = (random.randint(100, WINDOW_WIDTH-100), 110)
+        food_02_speed = random.randint(2, 8)
+        food_02_rendered = True
+    food_02_rect.y += food_02_speed
+    display_surface.blit(food_02_image, food_02_rect)
+
+    if not food_03_rendered:
+        food_03_image = random.choice(food_image_list)
+        food_03_image = pygame.transform.scale(food_03_image, (80, 80))
+        food_03_rect = food_03_image.get_rect()
+        food_03_rect.center = (random.randint(100, WINDOW_WIDTH-100), 110)
+        food_03_speed = random.randint(2, 8)
+        food_03_rendered = True
+    food_03_rect.y += food_03_speed
+    display_surface.blit(food_03_image, food_03_rect)
+
+    if not food_04_rendered:
+        food_04_image = random.choice(food_image_list)
+        food_04_image = pygame.transform.scale(food_04_image, (80, 80))
+        food_04_rect = food_04_image.get_rect()
+        food_04_rect.center = (random.randint(100, WINDOW_WIDTH-100), 110)
+        food_04_speed = random.randint(2, 8)
+        food_04_rendered = True
+    food_04_rect.y += food_04_speed
+    display_surface.blit(food_04_image, food_04_rect)
+
+    if not food_05_rendered:
+        food_05_image = random.choice(food_image_list)
+        food_05_image = pygame.transform.scale(food_05_image, (80, 80))
+        food_05_rect = food_05_image.get_rect()
+        food_05_rect.center = (random.randint(100, WINDOW_WIDTH-100), 110)
+        food_05_speed = random.randint(2, 8)
+        food_05_rendered = True
+    food_05_rect.y += food_05_speed
+    display_surface.blit(food_05_image, food_05_rect)
+
+    if not poison_01_rendered:
+        poison_01_image = random.choice(poison_image_list)
+        poison_01_image = pygame.transform.scale(poison_01_image, (80, 80))
+        poison_01_rect = poison_01_image.get_rect()
+        poison_01_rect.center = (random.randint(100, WINDOW_WIDTH-100), 110)
+        poison_01_speed = random.randint(2, 8)
+        poison_01_rendered = True
+    poison_01_rect.y += poison_01_speed
+    display_surface.blit(poison_01_image, poison_01_rect)
+
+    if not poison_02_rendered:
+        poison_02_image = random.choice(poison_image_list)
+        poison_02_image = pygame.transform.scale(poison_02_image, (80, 80))
+        poison_02_rect = poison_02_image.get_rect()
+        poison_02_rect.center = (random.randint(100, WINDOW_WIDTH-100), 110)
+        poison_02_speed = random.randint(2, 8)
+        poison_02_rendered = True
+    poison_02_rect.y += poison_02_speed
+    display_surface.blit(poison_02_image, poison_02_rect)
+
+    if not poison_03_rendered:
+        poison_03_image = random.choice(poison_image_list)
+        poison_03_image = pygame.transform.scale(poison_03_image, (80, 80))
+        poison_03_rect = poison_03_image.get_rect()
+        poison_03_rect.center = (random.randint(100, WINDOW_WIDTH-100), 110)
+        poison_03_speed = random.randint(2, 8)
+        poison_03_rendered = True
+    poison_03_rect.y += poison_03_speed
+    display_surface.blit(poison_03_image, poison_03_rect)
+
+    if not poison_04_rendered:
+        poison_04_image = random.choice(poison_image_list)
+        poison_04_image = pygame.transform.scale(poison_04_image, (80, 80))
+        poison_04_rect = poison_04_image.get_rect()
+        poison_04_rect.center = (random.randint(100, WINDOW_WIDTH-100), 110)
+        poison_04_speed = random.randint(2, 8)
+        poison_04_rendered = True
+    poison_04_rect.y += poison_04_speed
+    display_surface.blit(poison_04_image, poison_04_rect)
 
     #Draw platform
     pygame.draw.rect(display_surface, BROWN, (0, 685, WINDOW_WIDTH, 45))
@@ -115,15 +231,21 @@ while running:
             display_surface.blit(goodchar_right_image, char_rect)
         else:
             display_surface.blit(evilchar_right_image, char_rect)
-    #if (keys[pygame.K_UP] or keys[pygame.K_w]) and char_rect.top > 0:
-    #    char_rect.y -= VELOCITY
-    #if (keys[pygame.K_DOWN] or keys[pygame.K_s]) and char_rect.bottom < WINDOW_HEIGHT:
-    #    char_rect.y += VELOCITY
     else:
         if points > 0:
             display_surface.blit(goodchar_stand_image, char_rect)
         else:
             display_surface.blit(evilchar_stand_image, char_rect)
+
+    #Change text color
+    if points > -5:
+        score_text = font_medium.render("Score: " + str(points), True, ORANGE)
+        title_text = font_large.render("You Are What You Eat", True, YELLOW)
+        timer_text = font_medium.render("time: 99", True, ORANGE)
+    else:
+        score_text = font_medium.render("Score: " + str(points), True, PURPLE)
+        title_text = font_large.render("You Are What You Eat", True, PURPLE2)
+        timer_text = font_medium.render("time: 99", True, PURPLE)
 
     #Check for collision between two rects
     #if char_rect.colliderect(dragon_rect):
