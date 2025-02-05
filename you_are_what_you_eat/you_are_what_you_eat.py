@@ -54,13 +54,13 @@ game_over_text = font_medium.render("GAMEOVER", True, YELLOW)
 game_over_rect = game_over_text.get_rect()
 game_over_rect.center = (WINDOW_WIDTH//2, WINDOW_HEIGHT//2)
 
-#Set sounds
+#Set sounds and music
 food_sound_loc = os.path.join('you_are_what_you_eat', 'sounds', 'food.wav')
 food_sound = pygame.mixer.Sound(food_sound_loc)
 poison_sound_loc = os.path.join('you_are_what_you_eat', 'sounds', 'poison.wav')
 poison_sound = pygame.mixer.Sound(poison_sound_loc)
-intro_sound_loc = os.path.join('you_are_what_you_eat', 'sounds', 'intro.wav')
-pygame.mixer.music.load(intro_sound_loc)
+music_loc = os.path.join('you_are_what_you_eat', 'sounds', 'kid-games-music-comedy-situation.mp3')
+pygame.mixer.music.load(music_loc)
 
 #set characters image
 goodchar_stand_loc = os.path.join('you_are_what_you_eat', 'images', 'characters', 'good_minion_standing.png')
@@ -106,6 +106,7 @@ poison_03_rendered = False
 poison_04_rendered = False
 
 #The main game loop
+pygame.mixer.music.play(-1, 0.0)
 running = True
 while running:
     for event in pygame.event.get():
