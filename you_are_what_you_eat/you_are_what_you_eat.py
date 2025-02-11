@@ -14,6 +14,8 @@ pygame.display.set_caption("You Are What You Eat!")
 #Set FPS and clock
 FPS = 60
 clock = pygame.time.Clock()
+timer = 60
+timer_fps = 0
 
 #Set game values
 VELOCITY = 7
@@ -46,7 +48,7 @@ title_rect = title_text.get_rect()
 title_rect.centerx = WINDOW_WIDTH//2
 title_rect.y = 10
 
-timer_text = font_medium.render("time: 99", True, ORANGE)
+timer_text = font_medium.render("time: " + str(timer), True, ORANGE)
 timer_rect = timer_text.get_rect()
 timer_rect.topright = (WINDOW_WIDTH - 10, 10)
 
@@ -322,11 +324,11 @@ while running:
     if points >= 0:
         score_text = font_medium.render("Score: " + str(points), True, ORANGE)
         title_text = font_large.render("You Are What You Eat", True, YELLOW)
-        timer_text = font_medium.render("time: 99", True, ORANGE)
+        timer_text = font_medium.render("time: " + str(timer), True, ORANGE)
     else:
         score_text = font_medium.render("Score: " + str(points), True, PURPLE)
         title_text = font_large.render("You Are What You Eat", True, PURPLE2)
-        timer_text = font_medium.render("time: 99", True, PURPLE)
+        timer_text = font_medium.render("time: " + str(timer), True, PURPLE)
 
     #Check for collision between two rects
     #if char_rect.colliderect(dragon_rect):
@@ -347,6 +349,13 @@ while running:
 
     #Update display
     pygame.display.update()
+
+    #Compute time
+    if timer_fps >= FPS:
+        timer -= 1
+        timer_fps = 0
+    else:
+        timer_fps += 1
 
     #Tick the clock
     clock.tick(FPS)
