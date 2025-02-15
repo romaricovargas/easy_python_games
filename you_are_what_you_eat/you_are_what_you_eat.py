@@ -14,12 +14,15 @@ pygame.display.set_caption("You Are What You Eat!")
 #Set FPS and clock
 FPS = 60
 clock = pygame.time.Clock()
-timer = 60
+timer = 10
 timer_fps = 0
 
 #Set game values
 VELOCITY = 7
 points = 0
+game_over = False
+not_continue = False
+high_score = 0
 
 #Set colors
 CYAN = (0, 255, 255)
@@ -52,9 +55,21 @@ timer_text = font_medium.render("time: " + str(timer), True, ORANGE)
 timer_rect = timer_text.get_rect()
 timer_rect.topright = (WINDOW_WIDTH - 10, 10)
 
-game_over_text = font_medium.render("GAMEOVER", True, YELLOW)
+game_over_text = font_large.render("Time's up!", True, YELLOW)
 game_over_rect = game_over_text.get_rect()
-game_over_rect.center = (WINDOW_WIDTH//2, WINDOW_HEIGHT//2)
+game_over_rect.center = (WINDOW_WIDTH//2, WINDOW_HEIGHT//2 - 30)
+
+last_score_text = font_medium.render("your score is 00", True, ORANGE)
+last_score_rect = last_score_text.get_rect()
+last_score_rect.center = (WINDOW_WIDTH//2, WINDOW_HEIGHT//2 + 30)
+
+high_score_text = font_medium.render("high score is 00", True, PURPLE2)
+high_score_rect = high_score_text.get_rect()
+high_score_rect.center = (WINDOW_WIDTH//2, WINDOW_HEIGHT//2 + 80)
+
+continue_text = font_medium.render("press any key to continue", True, PURPLE)
+continue_rect = continue_text.get_rect()
+continue_rect.center = (WINDOW_WIDTH//2, WINDOW_HEIGHT//2 + 130)
 
 #Set sounds and music
 food_sound_loc = os.path.join('you_are_what_you_eat', 'sounds', 'food.wav')
@@ -69,6 +84,8 @@ turn_good_sound.set_volume(0.4)
 turn_evil_sound_loc = os.path.join('you_are_what_you_eat', 'sounds', 'turn_evil.wav')
 turn_evil_sound = pygame.mixer.Sound(turn_evil_sound_loc)
 turn_evil_sound.set_volume(0.2)
+game_over_sound_loc = os.path.join('you_are_what_you_eat', 'sounds', 'game_over.wav')
+game_over_sound = pygame.mixer.Sound(game_over_sound_loc)
 
 music_loc = os.path.join('you_are_what_you_eat', 'sounds', 'kid-games-music-comedy-situation.mp3')
 pygame.mixer.music.load(music_loc)
@@ -86,6 +103,8 @@ evilchar_left_loc = os.path.join('you_are_what_you_eat', 'images', 'characters',
 evilchar_left_image = pygame.image.load(evilchar_left_loc)
 evilchar_right_loc = os.path.join('you_are_what_you_eat', 'images', 'characters', 'evil_minion_right.png')
 evilchar_right_image = pygame.image.load(evilchar_right_loc)
+minion_banana_loc = os.path.join('you_are_what_you_eat', 'images', 'characters', 'minion_banana.png')
+minion_banana_image = pygame.image.load(minion_banana_loc)
 
 #set food image
 food_image_list = []
@@ -131,6 +150,53 @@ while running:
     #Fill the display
     display_surface.fill(BLACK)
 
+    #Game Over
+    if timer <= 0:
+        game_over = True
+        if points > high_score:
+            high_score = points
+        minion_banana_rec = minion_banana_image.get_rect()
+        minion_banana_rec.center = (WINDOW_WIDTH/2, 220)
+        display_surface.blit(minion_banana_image, minion_banana_rec)
+        display_surface.blit(game_over_text, game_over_rect)
+        last_score_text = font_medium.render("your score is " + str(points), True, ORANGE)
+        display_surface.blit(last_score_text, last_score_rect)
+        high_score_text = font_medium.render("high score is " + str(high_score), True, PURPLE2)
+        display_surface.blit(high_score_text, high_score_rect)
+        display_surface.blit(continue_text, continue_rect)
+        pygame.display.update()
+        pygame.mixer.music.stop()
+        game_over_sound.play()
+        pygame.time.delay(3000)
+        pygame.event.get()
+
+    while game_over:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                game_over_sound.stop()
+                food_01_rendered = False
+                food_02_rendered = False
+                food_03_rendered = False
+                food_04_rendered = False
+                food_05_rendered = False
+                poison_01_rendered = False
+                poison_02_rendered = False
+                poison_03_rendered = False
+                poison_04_rendered = False
+                points = 0
+                timer = 60
+                char_rect.center = (640, 620)
+                pygame.mixer.music.play(-1, 0.0)
+                display_surface.fill(BLACK)
+                game_over = False
+            if event.type == pygame.QUIT:
+                game_over = False
+                not_continue = True
+
+    if not_continue:
+        break
+
+    
     #Blit texts to screen
     display_surface.blit(score_text, score_rect)
     display_surface.blit(title_text, title_rect)
