@@ -24,6 +24,7 @@ game_over = False
 not_continue = False
 intro = True
 high_score = 0
+run_speed = 6
 
 #Set colors
 CYAN = (0, 255, 255)
@@ -158,6 +159,7 @@ poison_01_rendered = False
 poison_02_rendered = False
 poison_03_rendered = False
 poison_04_rendered = False
+minion_fruits_rendered = False
 
 #The main game loop
 pygame.mixer.music.play(-1, 0.0)
@@ -176,12 +178,18 @@ while running:
 
     #Intro
     while intro:
+        display_surface.fill(BLACK)
         display_surface.blit(main_title_text, main_title_rect)
         display_surface.blit(good_instruction_text, good_instruction_rect)
 
-        minion_fruits_rec = minion_fruits_image.get_rect()
-        minion_fruits_rec.center = (WINDOW_WIDTH/2, WINDOW_HEIGHT/2 - 180)
-        display_surface.blit(minion_fruits_image, minion_fruits_rec)
+        if not minion_fruits_rendered:
+            minion_fruits_rect = minion_fruits_image.get_rect()
+            minion_fruits_rect.center = (WINDOW_WIDTH/2, WINDOW_HEIGHT/2 - 180)
+            minion_fruits_rendered = True
+        if minion_fruits_rect.x >= (WINDOW_WIDTH - 300) or minion_fruits_rect.x <= 100:
+            run_speed = -1 * run_speed    
+        minion_fruits_rect.x += run_speed
+        display_surface.blit(minion_fruits_image, minion_fruits_rect)
 
         display_surface.blit(bad_instruction_text, bad_instruction_rect)
         display_surface.blit(play_game_text, play_game_rect)
@@ -196,6 +204,8 @@ while running:
             if event.type == pygame.QUIT:
                 intro = False
                 not_continue = True
+
+        clock.tick(FPS)
         
 
     #Game Over
