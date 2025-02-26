@@ -14,24 +14,22 @@ pygame.display.set_caption("You Are What You Eat!")
 #Set FPS and clock
 FPS = 60
 clock = pygame.time.Clock()
-timer = 60
-timer_fps = 0
 
 #Set game values
 VELOCITY = 7
 points = 0
+high_score = 0
+intro_run_speed = 6
+timer = 60
+frame_counter = 0
+
+#Set game flags
 game_over = False
 not_continue = False
 intro = True
-high_score = 0
-run_speed = 6
 
 #Set colors
-CYAN = (0, 255, 255)
-BROWN = (33, 33, 33)
-GREEN = (0, 255, 0)
-DARKGREEN = (10, 50, 10)
-WHITE = (255, 255, 255)
+GRAY = (33, 33, 33)
 BLACK = (0, 0, 0)
 YELLOW = (246, 233, 94 )
 ORANGE = (255, 195, 0)
@@ -109,9 +107,6 @@ game_over_sound = pygame.mixer.Sound(game_over_sound_loc)
 music_loc = os.path.join('you_are_what_you_eat', 'sounds', 'kid-games-music-comedy-situation.mp3')
 pygame.mixer.music.load(music_loc)
 
-#intro_music_loc = os.path.join('you_are_what_you_eat', 'sounds', 'intro.mp3')
-#pygame.mixer.music.load(intro_music_loc)
-
 #set characters image
 goodchar_stand_loc = os.path.join('you_are_what_you_eat', 'images', 'characters', 'good_minion_standing.png')
 goodchar_stand_image = pygame.image.load(goodchar_stand_loc)
@@ -149,7 +144,7 @@ for p in os.listdir(poison_folder):
 char_rect = goodchar_stand_image.get_rect()
 char_rect.center = (640, 620)
 
-#Food and poison rendering flags
+#food and poison rendering flags
 food_01_rendered = False
 food_02_rendered = False
 food_03_rendered = False
@@ -176,7 +171,7 @@ while running:
     #Fill the display
     display_surface.fill(BLACK)
 
-    #Intro
+    #INTRO
     while intro:
         display_surface.fill(BLACK)
         display_surface.blit(main_title_text, main_title_rect)
@@ -187,8 +182,8 @@ while running:
             minion_fruits_rect.center = (WINDOW_WIDTH/2, WINDOW_HEIGHT/2 - 180)
             minion_fruits_rendered = True
         if minion_fruits_rect.x >= (WINDOW_WIDTH - 300) or minion_fruits_rect.x <= 100:
-            run_speed = -1 * run_speed    
-        minion_fruits_rect.x += run_speed
+            intro_run_speed = -1 * intro_run_speed    
+        minion_fruits_rect.x += intro_run_speed
         display_surface.blit(minion_fruits_image, minion_fruits_rect)
 
         display_surface.blit(bad_instruction_text, bad_instruction_rect)
@@ -199,16 +194,14 @@ while running:
             if event.type == pygame.KEYDOWN:
                 intro = False
                 pygame.mixer.music.stop()
-                #pygame.mixer.music.load(music_loc)
                 pygame.mixer.music.play(-1, 0.0)
             if event.type == pygame.QUIT:
                 intro = False
                 not_continue = True
-
         clock.tick(FPS)
         
 
-    #Game Over
+    #GAME OVER
     if timer <= 0:
         game_over = True
         if points > high_score:
@@ -255,6 +248,7 @@ while running:
     if not_continue:
         break
 
+    #GAME PROPER
     
     #Blit texts to screen
     display_surface.blit(score_text, score_rect)
@@ -361,9 +355,9 @@ while running:
     display_surface.blit(poison_04_image, poison_04_rect)
 
     #Draw platform
-    platform_rect = pygame.draw.rect(display_surface, BROWN, (0, 685, WINDOW_WIDTH, 45))
+    platform_rect = pygame.draw.rect(display_surface, GRAY, (0, 685, WINDOW_WIDTH, 45))
 
-    #Move the dragon continuously
+    #Move the character continuously
     if (keys[pygame.K_LEFT] or keys[pygame.K_a]) and char_rect.left > 0:
         char_rect.x -= VELOCITY
         if points >= 0:
@@ -445,7 +439,7 @@ while running:
         turn_good_sound.play()
 
 
-    #Change text color
+    #Change text color based on points
     if points >= 0:
         score_text = font_medium.render("Score: " + str(points), True, ORANGE)
         title_text = font_large.render("You Are What You Eat", True, YELLOW)
@@ -455,32 +449,15 @@ while running:
         title_text = font_large.render("You Are What You Eat", True, PURPLE2)
         timer_text = font_medium.render("time: " + str(timer), True, PURPLE)
 
-    #Check for collision between two rects
-    #if char_rect.colliderect(dragon_rect):
-    #    print("HIT")
-    #    dragon_rect.x = random.randint(0, WINDOW_WIDTH - 80)
-    #    dragon_rect.y = random.randint(0, WINDOW_HEIGHT - 80)
-
-    #Fill display surface
-    #display_surface.fill((0, 0, 0))
-
-    #Draw rectanges to represent the rects of each object
-    #pygame.draw.rect(display_surface, (0, 255, 0), char_rect, 1)
-    #pygame.draw.rect(display_surface, (255, 255, 0), dragon_rect, 1)
-
-    #Blit assets
-    #display_surface.blit(goodchar_stand_image, char_rect)
-    #display_surface.blit(dragon_image, dragon_rect)
-
     #Update display
     pygame.display.update()
 
     #Compute time
-    if timer_fps >= FPS:
+    if frame_counter >= FPS:
         timer -= 1
-        timer_fps = 0
+        frame_counter = 0
     else:
-        timer_fps += 1
+        frame_counter += 1
 
     #Tick the clock
     clock.tick(FPS)
